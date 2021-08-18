@@ -6,6 +6,8 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -1028,12 +1030,16 @@ public class GroupingsRestControllerv2_1Test {
     public void getNumberOfMembershipTest() throws Exception {
         final String uid = currentUser().getUid();
         List<Membership> memberships = membershipService.getMembershipResults(ADMIN, uid);
-        given(membershipService.getNumberOfMemberships(ADMIN, uid)).willReturn(memberships.size());
+        given(membershipService.getNumberOfMemberships(ADMIN, uid))
+                .willReturn(memberships.size());
 
         mockMvc.perform(get(API_BASE + "/groupings/" + uid + "/memberships")
                 .with(csrf())
                 .header(CURRENT_USER, uid))
                 .andExpect(status().isOk())
                 .andReturn();
+
+        verify(membershipService, times(1))
+                .getNumberOfMemberships(ADMIN, uid);
     }
 }
