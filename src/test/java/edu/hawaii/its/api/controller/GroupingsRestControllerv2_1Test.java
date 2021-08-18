@@ -1030,15 +1030,14 @@ public class GroupingsRestControllerv2_1Test {
     @WithMockUhUser(username = "iamtst01")
     public void getNumberOfMembershipTest() throws Exception {
         String uid = currentUser().getUid();
-        List<Membership> memberships = membershipService.getMembershipResults(ADMIN, uid);
         given(membershipService.getNumberOfMemberships(ADMIN, uid))
-                .willReturn(memberships.size());
+                .willReturn(666);
 
         mockMvc.perform(get(API_BASE + "/groupings/" + uid + "/memberships")
                 .with(csrf())
                 .header(CURRENT_USER, ADMIN))
                 .andExpect(status().isOk())
-                .andExpect(content().string(Integer.toString(memberships.size())))
+                .andExpect(content().string("666"))
                 .andReturn();
 
         verify(membershipService, times(1))
