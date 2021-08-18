@@ -1,22 +1,15 @@
 package edu.hawaii.its.api.controller;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.PostConstruct;
+import javax.mail.MessagingException;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import edu.hawaii.its.api.service.GroupAttributeService;
-import edu.hawaii.its.api.service.GroupingAssignmentService;
-import edu.hawaii.its.api.service.HelperService;
-import edu.hawaii.its.api.service.MemberAttributeService;
-import edu.hawaii.its.api.service.MembershipService;
-import edu.hawaii.its.api.type.AddMemberResult;
-import edu.hawaii.its.api.type.AdminListsHolder;
-import edu.hawaii.its.api.type.GenericServiceResult;
-import edu.hawaii.its.api.type.Grouping;
-import edu.hawaii.its.api.type.GroupingPath;
-import edu.hawaii.its.api.type.GroupingsServiceResult;
-import edu.hawaii.its.api.type.Membership;
-import edu.hawaii.its.api.type.RemoveMemberResult;
-import edu.hawaii.its.api.type.SyncDestination;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -35,12 +28,20 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.PostConstruct;
-import javax.mail.MessagingException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import edu.hawaii.its.api.service.GroupAttributeService;
+import edu.hawaii.its.api.service.GroupingAssignmentService;
+import edu.hawaii.its.api.service.HelperService;
+import edu.hawaii.its.api.service.MemberAttributeService;
+import edu.hawaii.its.api.service.MembershipService;
+import edu.hawaii.its.api.type.AddMemberResult;
+import edu.hawaii.its.api.type.AdminListsHolder;
+import edu.hawaii.its.api.type.GenericServiceResult;
+import edu.hawaii.its.api.type.Grouping;
+import edu.hawaii.its.api.type.GroupingPath;
+import edu.hawaii.its.api.type.GroupingsServiceResult;
+import edu.hawaii.its.api.type.Membership;
+import edu.hawaii.its.api.type.RemoveMemberResult;
+import edu.hawaii.its.api.type.SyncDestination;
 
 @RestController
 @RequestMapping("/api/groupings/v2.1")
@@ -97,14 +98,16 @@ public class GroupingsRestControllerv2_1 {
      * Get a hello string, this is a test endpoint.
      */
     @GetMapping(value = "/")
-    @ResponseBody public ResponseEntity hello() {
+    @ResponseBody
+    public ResponseEntity hello() {
         return ResponseEntity
                 .ok()
                 .body("University of Hawaii Groupings");
     }
 
     /**
-     * Get a GenericServiceResult to be viewed on swagger, a great helper for observing the contents of a grouper
+     * Get a GenericServiceResult to be viewed on swagger, a great helper for observing the contents
+     * of a grouper
      * object.
      */
     @GetMapping(value = "/swagger/toString/")
@@ -226,7 +229,8 @@ public class GroupingsRestControllerv2_1 {
     }
 
     /**
-     * Get a list of all the paths associated with the groupings which uid as the ability top opt into.
+     * Get a list of all the paths associated with the groupings which uid as the ability top opt
+     * into.
      */
     @GetMapping(value = "/groupings/optInGroups/{uid}")
     @ResponseBody
@@ -445,8 +449,7 @@ public class GroupingsRestControllerv2_1 {
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<List<SyncDestination>> getSyncDestinations(@RequestHeader("current_user") String
-            currentUser,
+    public ResponseEntity<List<SyncDestination>> getSyncDestinations(@RequestHeader("current_user") String currentUser,
             @PathVariable String path) throws Exception {
         logger.info("Entered REST getAllSyncDestinations...");
         return ResponseEntity
@@ -499,6 +502,10 @@ public class GroupingsRestControllerv2_1 {
     public ResponseEntity<Integer> getNumberOfMemberships(@RequestHeader("current_user") String currentUser,
             @PathVariable String uid) {
         logger.info("Entered REST getNumberOfMemberships...");
+
+        System.out.println("API XXX; currentUser: " + currentUser);
+        System.out.println("API XXX;         uid: " + uid);
+
         return ResponseEntity
                 .ok()
                 .body(membershipService.getNumberOfMemberships(currentUser, uid));

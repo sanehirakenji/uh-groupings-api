@@ -1033,6 +1033,10 @@ public class GroupingsRestControllerv2_1Test {
         given(membershipService.getNumberOfMemberships(ADMIN, uid))
                 .willReturn(memberships.size());
 
+        System.out.println("TST YYY;        ADMIN: " + ADMIN);
+        System.out.println("TST YYY;          uid: " + uid);
+        System.out.println("TST YYY; CURRENT_USER: " + CURRENT_USER);
+
         mockMvc.perform(get(API_BASE + "/groupings/" + uid + "/memberships")
                 .with(csrf())
                 .header(CURRENT_USER, uid))
