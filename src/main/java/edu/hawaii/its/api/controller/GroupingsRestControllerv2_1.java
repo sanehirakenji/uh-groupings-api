@@ -502,10 +502,6 @@ public class GroupingsRestControllerv2_1 {
     public ResponseEntity<Integer> getNumberOfMemberships(@RequestHeader("current_user") String currentUser,
             @PathVariable String uid) {
         logger.info("Entered REST getNumberOfMemberships...");
-
-        System.out.println("API XXX; currentUser: " + currentUser);
-        System.out.println("API XXX;         uid: " + uid);
-
         return ResponseEntity
                 .ok()
                 .body(membershipService.getNumberOfMemberships(currentUser, uid));

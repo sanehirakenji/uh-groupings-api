@@ -1029,14 +1029,10 @@ public class GroupingsRestControllerv2_1Test {
     @Test
     @WithMockUhUser(username = "iamtst01")
     public void getNumberOfMembershipTest() throws Exception {
-        final String uid = currentUser().getUid();
+        String uid = currentUser().getUid();
         List<Membership> memberships = membershipService.getMembershipResults(ADMIN, uid);
         given(membershipService.getNumberOfMemberships(ADMIN, uid))
                 .willReturn(memberships.size());
-
-        System.out.println("TST YYY;        ADMIN: " + ADMIN);
-        System.out.println("TST YYY;          uid: " + uid);
-        System.out.println("TST YYY; CURRENT_USER: " + CURRENT_USER);
 
         mockMvc.perform(get(API_BASE + "/groupings/" + uid + "/memberships")
                 .with(csrf())
