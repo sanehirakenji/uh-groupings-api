@@ -15,6 +15,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
@@ -1041,6 +1042,7 @@ public class GroupingsRestControllerv2_1Test {
                 .with(csrf())
                 .header(CURRENT_USER, ADMIN))
                 .andExpect(status().isOk())
+                .andExpect(content().string(Integer.toString(memberships.size())))
                 .andReturn();
 
         verify(membershipService, times(1))
