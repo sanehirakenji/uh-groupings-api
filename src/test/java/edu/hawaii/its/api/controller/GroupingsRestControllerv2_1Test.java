@@ -1039,7 +1039,7 @@ public class GroupingsRestControllerv2_1Test {
 
         mockMvc.perform(get(API_BASE + "/groupings/" + uid + "/memberships")
                 .with(csrf())
-                .header(CURRENT_USER, uid))
+                .header(CURRENT_USER, ADMIN))
                 .andExpect(status().isOk())
                 .andReturn();
 
