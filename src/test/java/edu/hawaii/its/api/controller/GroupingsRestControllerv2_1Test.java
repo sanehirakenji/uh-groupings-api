@@ -1,9 +1,43 @@
 package edu.hawaii.its.api.controller;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.Matchers.hasSize;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.BDDMockito.given;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithAnonymousUser;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.web.context.WebApplicationContext;
+
+import edu.hawaii.its.api.access.User;
+import edu.hawaii.its.api.access.UserContextService;
 import edu.hawaii.its.api.configuration.SpringBootWebApplication;
 import edu.hawaii.its.api.service.GroupAttributeService;
 import edu.hawaii.its.api.service.GroupingAssignmentService;
@@ -21,38 +55,6 @@ import edu.hawaii.its.api.type.Membership;
 import edu.hawaii.its.api.type.Person;
 import edu.hawaii.its.api.type.RemoveMemberResult;
 import edu.hawaii.its.api.type.SyncDestination;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithAnonymousUser;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.web.context.WebApplicationContext;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.BDDMockito.given;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
 @RunWith(SpringRunner.class)
 @ActiveProfiles("localTest")
@@ -105,6 +107,9 @@ public class GroupingsRestControllerv2_1Test {
     private MembershipService membershipService;
 
     @Autowired
+    private UserContextService userContextService;
+
+    @Autowired
     private WebApplicationContext context;
 
     private MockMvc mockMvc;
@@ -119,6 +124,10 @@ public class GroupingsRestControllerv2_1Test {
         mockMvc = webAppContextSetup(context)
                 .apply(springSecurity())
                 .build();
+    }
+
+    private User currentUser() {
+        return userContextService.getCurrentUser();
     }
 
     // Test data.
@@ -325,7 +334,7 @@ public class GroupingsRestControllerv2_1Test {
 
     @Test
     @WithMockUhUser(username = "bobo")
-    public void getNumberOfGroupingsTest() throws Exception{
+    public void getNumberOfGroupingsTest() throws Exception {
         final String uid = "grouping";
         final String owner = "bobo";
 
@@ -451,7 +460,6 @@ public class GroupingsRestControllerv2_1Test {
                 .andExpect(status().isOk());
     }
 
-
     @Test
     @WithMockUhUser
     public void getSyncDestinationsTest() throws Exception {
@@ -476,7 +484,8 @@ public class GroupingsRestControllerv2_1Test {
 
     }
 
-    @Test @WithMockUhUser
+    @Test
+    @WithMockUhUser
     public void addIncludeMembersTest() throws Exception {
         List<String> usersToAdd = new ArrayList<>();
         List<AddMemberResult> addMemberResults = new ArrayList<>();
@@ -492,7 +501,8 @@ public class GroupingsRestControllerv2_1Test {
                 .andExpect(status().isOk());
     }
 
-    @Test @WithMockUhUser
+    @Test
+    @WithMockUhUser
     public void addExcludeMembersTest() throws Exception {
         List<String> usersToAdd = new ArrayList<>();
         List<AddMemberResult> addMemberResults = new ArrayList<>();
@@ -508,7 +518,8 @@ public class GroupingsRestControllerv2_1Test {
                 .andExpect(status().isOk());
     }
 
-    @Test @WithMockUhUser
+    @Test
+    @WithMockUhUser
     public void removeIncludeMembersTest() throws Exception {
         List<String> usersToRemove = new ArrayList<>();
         List<RemoveMemberResult> removeMemberResults = new ArrayList<>();
@@ -525,7 +536,8 @@ public class GroupingsRestControllerv2_1Test {
                 .andExpect(status().isOk());
     }
 
-    @Test @WithMockUhUser
+    @Test
+    @WithMockUhUser
     public void removeExcludeMembersTest() throws Exception {
         List<String> usersToRemove = new ArrayList<>();
         List<RemoveMemberResult> removeMemberResults = new ArrayList<>();
@@ -1012,15 +1024,16 @@ public class GroupingsRestControllerv2_1Test {
     }
 
     @Test
-    @WithMockUhUser
+    @WithMockUhUser(username = "iamtst01")
     public void getNumberOfMembershipTest() throws Exception {
-        List<Membership> memberships = membershipService.getMembershipResults(ADMIN, "iamtst01");
-        given(membershipService.getNumberOfMemberships(ADMIN, "iamtst01")).willReturn(memberships.size());
+        final String uid = currentUser().getUid();
+        List<Membership> memberships = membershipService.getMembershipResults(ADMIN, uid);
+        given(membershipService.getNumberOfMemberships(ADMIN, uid)).willReturn(memberships.size());
 
-        mockMvc.perform(get(API_BASE + "/groupings/iamtst01/memberships")
-                        .with(csrf())
-                        .header(CURRENT_USER, "iamtst01"))
-                        .andExpect(status().isOk())
-                        .andReturn();
+        mockMvc.perform(get(API_BASE + "/groupings/" + uid + "/memberships")
+                .with(csrf())
+                .header(CURRENT_USER, uid))
+                .andExpect(status().isOk())
+                .andReturn();
     }
 }
