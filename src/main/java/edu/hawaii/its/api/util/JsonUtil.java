@@ -18,7 +18,6 @@ public class JsonUtil {
             result = new ObjectMapper().writeValueAsString(obj);
         } catch (Exception e) {
             logger.error("Error: " + e);
-            // Maybe we should throw something?
         }
         return result;
     }
@@ -29,7 +28,6 @@ public class JsonUtil {
             result = new ObjectMapper().readValue(json, type);
         } catch (Exception e) {
             logger.error("Error: " + e);
-            // Maybe we should throw something?
         }
         return result;
     }
