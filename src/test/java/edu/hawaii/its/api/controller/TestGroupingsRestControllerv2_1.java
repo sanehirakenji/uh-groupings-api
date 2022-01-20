@@ -306,6 +306,7 @@ public class TestGroupingsRestControllerv2_1 {
         membershipService.removeAdmin(ADMIN, usernames[0]);
 
         // Remove ownership
+
         membershipService.removeOwnerships(GROUPING, usernames[0], Arrays.asList(usernames[1]));
 
         // Remove usernames[3] from include and add to exclude

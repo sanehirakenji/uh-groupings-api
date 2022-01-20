@@ -785,6 +785,7 @@ public class GroupingsRestControllerv2_1Test {
         given(membershipService.removeOwnerships("grouping", USERNAME, ownersToRemove))
                 .willReturn(removeMemberResultList);
 
+
         MvcResult result = mockMvc.perform(delete(API_BASE + "/groupings/grouping/owners/" + ownersToRemove)
                 .with(csrf())
                 .header(CURRENT_USER, USERNAME))

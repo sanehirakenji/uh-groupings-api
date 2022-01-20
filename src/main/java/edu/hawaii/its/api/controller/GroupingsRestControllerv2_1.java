@@ -341,6 +341,7 @@ public class GroupingsRestControllerv2_1 {
     /**
      * Delete a grouping owner.
      */
+
     @DeleteMapping(value = "/groupings/{path:[\\w-:.]+}/owners/{uid}")
     public ResponseEntity<List<RemoveMemberResult>> removeOwners(@RequestHeader("current_user") String currentUser,
             @PathVariable String path,
