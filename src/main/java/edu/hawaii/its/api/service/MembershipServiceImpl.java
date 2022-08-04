@@ -130,6 +130,7 @@ public class MembershipServiceImpl implements MembershipService {
             throw new AccessDeniedException(INSUFFICIENT_PRIVILEGES);
         }
         List<Membership> memberships = new ArrayList<>();
+        List<Membership> ownedMemberships = new ArrayList<>(); //ADDED
         List<String> groupPaths;
         List<String> optOutList;
         try {
@@ -167,6 +168,7 @@ public class MembershipServiceImpl implements MembershipService {
                 }
                 if (path.endsWith(OWNERS)) {
                     membership.setInOwner(true);
+                    ownedMemberships.add(membership); //ADDED
                 }
             }
             membership.setPath(groupingPath);
@@ -174,6 +176,7 @@ public class MembershipServiceImpl implements MembershipService {
             membership.setName(helperService.nameGroupingPath(groupingPath));
             memberships.add(membership);
         }
+        memberships.removeAll(ownedMemberships); //ADDED
         return memberships;
     }
 
